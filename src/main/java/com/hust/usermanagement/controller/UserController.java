@@ -1,5 +1,6 @@
 package com.hust.usermanagement.controller;
 
+import com.hust.usermanagement.dto.UserDto;
 import com.hust.usermanagement.entity.User;
 import com.hust.usermanagement.service.UserService;
 import lombok.AllArgsConstructor;
@@ -18,26 +19,26 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        User createdUser = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
+        UserDto createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id){
-        User userById = userService.getUserById(id);
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
+        UserDto userById = userService.getUserById(id);
         return ResponseEntity.ok().body(userById);
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAllUsers(){
+        List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok().body(users);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user){
-        User updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto user){
+        UserDto updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok().body(updatedUser);
     }
 
