@@ -2,6 +2,7 @@ package com.hust.usermanagement.service;
 
 import com.hust.usermanagement.dto.UserDto;
 import com.hust.usermanagement.entity.User;
+import com.hust.usermanagement.exception.ResourceNotFoundException;
 import com.hust.usermanagement.mapper.AutoUserMapper;
 import com.hust.usermanagement.mapper.UserMapper;
 import com.hust.usermanagement.repository.UserRepository;
@@ -37,7 +38,7 @@ public class UserService {
     }
 
     public UserDto getUserById(Long id){
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 //        return UserMapper.mapToUserDto(user);
 //        return modelMapper.map(user, UserDto.class);
         return AutoUserMapper.MAPPER.mapToUserDto(user);
@@ -51,7 +52,7 @@ public class UserService {
     }
 
     public UserDto updateUser(Long id, UserDto user){
-        User existUser = userRepository.findById(id).get();
+        User existUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         existUser.setFirstName(user.getFirstName());
         existUser.setLastName(user.getLastName());
         existUser.setEmail(user.getEmail());
@@ -61,6 +62,7 @@ public class UserService {
     }
 
     public void deleteUser(Long id){
+        User existUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
         userRepository.deleteById(id);
     }
 }
