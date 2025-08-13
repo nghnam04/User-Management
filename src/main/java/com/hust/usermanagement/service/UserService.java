@@ -2,6 +2,7 @@ package com.hust.usermanagement.service;
 
 import com.hust.usermanagement.dto.UserDto;
 import com.hust.usermanagement.entity.User;
+import com.hust.usermanagement.exception.EmailAlreadyExistsException;
 import com.hust.usermanagement.exception.ResourceNotFoundException;
 import com.hust.usermanagement.mapper.AutoUserMapper;
 import com.hust.usermanagement.mapper.UserMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +29,10 @@ public class UserService {
     public UserDto createUser(UserDto user){
 //        User user1 = UserMapper.mapToUser(user);
 //        User user1 = modelMapper.map(user, User.class);
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Email for this User already exists");
+        }
         User user1 = AutoUserMapper.MAPPER.mapToUser(user);
 
         User savedUser = userRepository.save(user1);
@@ -53,6 +59,12 @@ public class UserService {
 
     public UserDto updateUser(Long id, UserDto user){
         User existUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Email for this User already exists");
+        }
+
         existUser.setFirstName(user.getFirstName());
         existUser.setLastName(user.getLastName());
         existUser.setEmail(user.getEmail());
