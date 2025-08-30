@@ -1,0 +1,25 @@
+services:
+  mysqldb:
+    container_name: "mysqldb"
+    image: "mysql:latest"
+    environment:
+      - "MYSQL_DATABASE=employeedb"
+      - "MYSQL_ROOT_PASSWORD=admin"
+    networks:
+      - springboot-mysql-net
+
+  usermanagement:
+    container_name: "usermanagement"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - springboot-mysql-net
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - "mysqldb"
+
+networks:
+  springboot-mysql-net:
